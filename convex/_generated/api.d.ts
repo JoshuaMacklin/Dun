@@ -9,6 +9,7 @@
  */
 
 import type * as http from "../http.js";
+import type * as pomodoroSettings from "../pomodoroSettings.js";
 import type * as todos from "../todos.js";
 
 import type {
@@ -19,6 +20,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   http: typeof http;
+  pomodoroSettings: typeof pomodoroSettings;
   todos: typeof todos;
 }>;
 

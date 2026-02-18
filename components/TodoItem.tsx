@@ -19,7 +19,7 @@ export function TodoItem({ todo }: { todo: Todo }) {
   }, [todo._id, toggleComplete]);
 
   const handleDelete = useCallback(() => {
-    if (typeof window !== "undefined" && window.confirm("Delete this todo?")) {
+    if (typeof window !== "undefined" && window.confirm("Delete this task?")) {
       remove({ id: todo._id });
     }
   }, [todo._id, remove]);
