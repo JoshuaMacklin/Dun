@@ -1,12 +1,26 @@
 "use client";
 
+import { useState, useCallback } from "react";
 import { Header } from "@/components/Header";
 import { SignUpButton } from "@clerk/nextjs";
-import { LandingTodoPreview } from "@/components/landing/LandingTodoPreview";
+import {
+  LandingTodoPreview,
+  DEMO_TASKS,
+} from "@/components/landing/LandingTodoPreview";
 import { LandingPomodoroPreview } from "@/components/landing/LandingPomodoroPreview";
 import { LandingStatsPreview } from "@/components/landing/LandingStatsPreview";
 
 export default function Home() {
+  const [tasks, setTasks] = useState(DEMO_TASKS);
+
+  const handleToggle = useCallback((id: string) => {
+    setTasks((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
+    );
+  }, []);
+
+  const completedCount = tasks.filter((t) => t.completed).length+7;
+
   return (
     <div className="min-h-screen bg-neutral-950">
       <Header />
@@ -38,7 +52,7 @@ export default function Home() {
               <h3 className="mb-4 text-sm font-medium text-neutral-400">
                 Tasks
               </h3>
-              <LandingTodoPreview />
+              <LandingTodoPreview tasks={tasks} onToggle={handleToggle} />
             </div>
             <div className="rounded-xl border border-neutral-800 bg-neutral-900/30 p-4">
               <h3 className="mb-4 text-sm font-medium text-neutral-400">
@@ -55,7 +69,7 @@ export default function Home() {
           style={{ animationDelay: "300ms", animationFillMode: "forwards" }}
         >
           <div className="rounded-xl border border-neutral-800 bg-neutral-900/30 p-4 sm:p-6">
-            <LandingStatsPreview />
+            <LandingStatsPreview totalCompleted={completedCount} />
           </div>
         </section>
 

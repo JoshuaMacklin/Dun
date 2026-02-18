@@ -20,22 +20,26 @@ function formatDateLabel(dateStr: string) {
 }
 
 const MOCK_STATS = {
-  totalCompleted: 47,
+  totalCompleted: 0,
   dailyCounts: (() => {
     const dates: { date: string; count: number }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date();
-      d.setDate(d.getDate() - i);
+      d.setDate(d.getDate() - i+1);
       dates.push({
         date: d.toISOString().split("T")[0],
-        count: [5, 8, 12, 6, 9, 4, 3][6 - i],
+        count: [5, 8, 12, 6, 9, 4, 8][6 - i],
       });
     }
     return dates;
   })(),
 };
 
-export function LandingStatsPreview() {
+export function LandingStatsPreview({
+  totalCompleted,
+}: {
+  totalCompleted: number;
+}) {
   const chartData = MOCK_STATS.dailyCounts.map((d) => ({
     ...d,
     label: formatDateLabel(d.date),
@@ -48,7 +52,7 @@ export function LandingStatsPreview() {
           Total tasks completed
         </h2>
         <p className="mt-1 text-3xl font-semibold text-neutral-100">
-          {MOCK_STATS.totalCompleted}
+          {totalCompleted}
         </p>
       </div>
 

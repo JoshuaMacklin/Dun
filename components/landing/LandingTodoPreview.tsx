@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 
-const DEMO_TASKS = [
+export const DEMO_TASKS = [
   { id: "1", text: "Focus for 25 minutes", completed: false },
   { id: "2", text: "Ship the landing page", completed: true },
   { id: "3", text: "Take a well deserved break", completed: false },
@@ -52,15 +51,15 @@ function PreviewTodoItem({
   );
 }
 
-export function LandingTodoPreview() {
-  const [tasks, setTasks] = useState(DEMO_TASKS);
+export type DemoTask = (typeof DEMO_TASKS)[number];
 
-  const handleToggle = (id: string) => {
-    setTasks((prev) =>
-      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
-    );
-  };
-
+export function LandingTodoPreview({
+  tasks,
+  onToggle,
+}: {
+  tasks: DemoTask[];
+  onToggle: (id: string) => void;
+}) {
   return (
     <div className="space-y-2">
       {tasks.map((task) => (
@@ -68,7 +67,7 @@ export function LandingTodoPreview() {
           key={task.id}
           text={task.text}
           completed={task.completed}
-          onToggle={() => handleToggle(task.id)}
+          onToggle={() => onToggle(task.id)}
         />
       ))}
     </div>
