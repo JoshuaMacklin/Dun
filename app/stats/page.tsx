@@ -72,7 +72,7 @@ export default function StatsPage() {
                         borderRadius: "8px",
                       }}
                       labelStyle={{ color: "#a3a3a3" }}
-                      formatter={(value: number) => [value, "Completed"]}
+                      formatter={(value: number | undefined) => [value ?? 0, "Completed"]}
                       labelFormatter={(label) => label}
                     />
                     <Line

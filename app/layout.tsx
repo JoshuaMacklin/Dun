@@ -19,7 +19,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Dunn - The Ultimate Task Management App",
+  title: "Dun - The Ultimate Task Management App",
   description: "Full-stack task management app built with Convex and Next.js",
 };
 
