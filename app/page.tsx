@@ -10,10 +10,10 @@ export default function Home() {
       <main className="mx-auto max-w-2xl px-4 py-12">
         <div className="rounded-xl border border-neutral-800 bg-neutral-900/50 p-8 text-center">
           <h2 className="text-xl font-semibold text-neutral-100">
-            Todo
+            Dunn
           </h2>
           <p className="mt-2 text-neutral-400">
-            Sign in to manage your todos.
+            Sign in to manage your tasks.
           </p>
           <br />
           <SignInButton mode="modal">

@@ -6,11 +6,12 @@ export const list = query({
     const identity = await ctx.auth.getUserIdentity();
     if (identity === null) return [];
     const userId = identity.subject;
-    return await ctx.db
+    const todos = await ctx.db
       .query("todos")
       .withIndex("by_user", (q) => q.eq("userId", userId))
       .order("desc")
       .collect();
+    return todos.filter((t) => t.hidden !== true);
   },
 });
 
@@ -73,7 +74,10 @@ export const toggleComplete = mutation({
     const userId = identity.subject;
     const todo = await ctx.db.get(args.id);
     if (!todo || todo.userId !== userId) throw new Error("Todo not found");
-    await ctx.db.patch(args.id, { completed: !todo.completed });
+    await ctx.db.patch(args.id, {
+      completed: !todo.completed,
+      completedAt: todo.completed ? undefined : Date.now(),
+    });
     return args.id;
   },
 });
@@ -88,5 +92,66 @@ export const remove = mutation({
     if (!todo || todo.userId !== userId) throw new Error("Todo not found");
     await ctx.db.delete(args.id);
     return args.id;
+  },
+});
+
+export const clearCompleted = mutation({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) throw new Error("Not authenticated");
+    const userId = identity.subject;
+    const todos = await ctx.db
+      .query("todos")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+    for (const todo of todos) {
+      if (todo.completed) {
+        await ctx.db.patch(todo._id, { hidden: true });
+      }
+    }
+  },
+});
+
+export const clearAll = mutation({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null) throw new Error("Not authenticated");
+    const userId = identity.subject;
+    const todos = await ctx.db
+      .query("todos")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+    for (const todo of todos) {
+      await ctx.db.delete(todo._id);
+    }
+  },
+});
+
+export const completionStats = query({
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (identity === null)
+      return { dailyCounts: [], totalCompleted: 0 };
+    const userId = identity.subject;
+    const todos = await ctx.db
+      .query("todos")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+    const completed = todos.filter((t) => t.completedAt != null);
+    const totalCompleted = completed.length;
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+    const dailyCounts: { date: string; count: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now - i * dayMs);
+      const dateStr = d.toISOString().slice(0, 10);
+      const dayStart = new Date(dateStr).getTime();
+      const dayEnd = dayStart + dayMs;
+      const count = completed.filter(
+        (t) => t.completedAt! >= dayStart && t.completedAt! < dayEnd
+      ).length;
+      dailyCounts.push({ date: dateStr, count });
+    }
+    return { dailyCounts, totalCompleted };
   },
 });

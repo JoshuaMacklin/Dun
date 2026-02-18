@@ -3,6 +3,8 @@ import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from '@clerk/themes'
 import { ConvexClientProvider } from "@/lib/ConvexClientProvider";
+import { PomodoroProvider } from "@/lib/PomodoroContext";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -17,8 +19,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Todo",
-  description: "Full-stack todo app with Convex and Next.js",
+  title: "Dunn - The Ultimate Task Management App",
+  description: "Full-stack task management app built with Convex and Next.js",
 };
 
 export default function RootLayout({
@@ -36,7 +38,12 @@ export default function RootLayout({
             theme: dark,
           }}
         >
-          <ConvexClientProvider>{children}</ConvexClientProvider>
+          <ConvexClientProvider>
+          <PomodoroProvider>
+          {children}
+          <Toaster theme="dark" position="top-center" />
+          </PomodoroProvider>
+        </ConvexClientProvider>
         </ClerkProvider>
       </body>
     </html>

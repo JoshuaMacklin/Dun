@@ -29,9 +29,9 @@ export function AddTodo() {
         value={text}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={onKeyDown}
-        placeholder="Add a todo..."
+        placeholder="Add a task..."
         className="flex-1 rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3 text-neutral-100 placeholder-neutral-500 outline-none transition duration-150 focus:border-neutral-600 focus:ring-2 focus:ring-neutral-700"
-        aria-label="New todo text"
+        aria-label="New task text"
       />
       <button
         type="button"
